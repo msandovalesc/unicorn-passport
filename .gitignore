@@ -33,3 +33,9 @@ out/
 .vscode/
 *.suo
 *.user
+
+# Local
+!.env.example
+.local/
+next-env.d.ts
+*.tsbuildinfo

@@ -1,0 +1,173 @@
+// Unicorn Passport data model.
+// Stamp counts are never stored: they are always calculated from the stamps table.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PassPlatform {
+  apple
+  google
+  web
+}
+
+enum EventType {
+  in_person
+  virtual
+}
+
+enum StampMethod {
+  qr
+  code
+  manual
+}
+
+model Employee {
+  id            String    @id @default(uuid()) @db.Uuid
+  m365ObjectId  String    @unique @map("m365_object_id")
+  name          String
+  email         String    @unique
+  location      String?
+  trackId       String?   @map("track_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastSeenAt    DateTime? @map("last_seen_at")
+
+  track          RewardTrack? @relation(fields: [trackId], references: [id])
+  passes         Pass[]
+  stamps         Stamp[]       @relation("StampEmployee")
+  stampsAdded    Stamp[]       @relation("StampAddedBy")
+  rewards        Reward[]      @relation("RewardEmployee")
+  rewardsGiven   Reward[]      @relation("RewardRedeemedBy")
+  eventsCreated  Event[]
+
+  @@map("employees")
+}
+
+// One row per card the employee holds (web card is always created at enrollment).
+// card_token is the opaque value inside the card QR; it never exposes email or employee id.
+model Pass {
+  id            String       @id @default(uuid()) @db.Uuid
+  employeeId    String       @map("employee_id") @db.Uuid
+  platform      PassPlatform
+  serialNumber  String       @unique @map("serial_number")
+  authToken     String       @map("auth_token")
+  cardToken     String       @unique @map("card_token")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @default(now()) @updatedAt @map("updated_at")
+
+  employee       Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  registrations  PassRegistration[]
+
+  @@unique([employeeId, platform])
+  @@map("passes")
+}
+
+// Apple devices registered for a pass (one pass can live on an iPhone and an Apple Watch).
+// Holds the APNs push token that the brief placed on passes.
+model PassRegistration {
+  id                    String   @id @default(uuid()) @db.Uuid
+  passId                String   @map("pass_id") @db.Uuid
+  deviceLibraryId       String   @map("device_library_id")
+  pushToken             String   @map("push_token")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  pass Pass @relation(fields: [passId], references: [id], onDelete: Cascade)
+
+  @@unique([passId, deviceLibraryId])
+  @@index([deviceLibraryId])
+  @@map("pass_registrations")
+}
+
+model Event {
+  id               String    @id @default(uuid()) @db.Uuid
+  name             String
+  type             EventType
+  description      String?
+  startsAt         DateTime  @map("starts_at")
+  endsAt           DateTime  @map("ends_at")
+  checkinOpensAt   DateTime  @map("checkin_opens_at")
+  checkinClosesAt  DateTime  @map("checkin_closes_at")
+  qrSecret         String    @map("qr_secret")
+  closedAt         DateTime? @map("closed_at")
+  createdById      String    @map("created_by") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  createdBy Employee @relation(fields: [createdById], references: [id])
+  stamps    Stamp[]
+
+  @@index([checkinOpensAt, checkinClosesAt])
+  @@map("events")
+}
+
+model Stamp {
+  id          String      @id @default(uuid()) @db.Uuid
+  employeeId  String      @map("employee_id") @db.Uuid
+  eventId     String      @map("event_id") @db.Uuid
+  method      StampMethod
+  addedById   String?     @map("added_by") @db.Uuid
+  note        String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  employee Employee  @relation("StampEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  addedBy  Employee? @relation("StampAddedBy", fields: [addedById], references: [id])
+
+  @@unique([employeeId, eventId])
+  @@index([eventId, createdAt])
+  @@map("stamps")
+}
+
+// Reward tracks let admins give different tiers to groups (e.g. Office vs Remote).
+model RewardTrack {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique
+  name        String
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  tiers     RewardTier[]
+  employees Employee[]
+
+  @@map("reward_tracks")
+}
+
+// Editable by admins without a deploy. stamp_count is the slot on the 10-stamp card (1..10).
+model RewardTier {
+  id          String   @id @default(uuid()) @db.Uuid
+  trackId     String   @map("track_id") @db.Uuid
+  stampCount  Int      @map("stamp_count")
+  item        String
+  active      Boolean  @default(true)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  track RewardTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@unique([trackId, stampCount])
+  @@map("reward_tiers")
+}
+
+// Created automatically when a tier is reached. card_number is which 10-stamp card it was earned on,
+// so the same tier can be earned again after the card restarts. Item is copied so later tier edits
+// don't rewrite history.
+model Reward {
+  id            String    @id @default(uuid()) @db.Uuid
+  employeeId    String    @map("employee_id") @db.Uuid
+  cardNumber    Int       @map("card_number")
+  tier          Int
+  item          String
+  unlockedAt    DateTime  @default(now()) @map("unlocked_at")
+  redeemedAt    DateTime? @map("redeemed_at")
+  redeemedById  String?   @map("redeemed_by") @db.Uuid
+
+  employee   Employee  @relation("RewardEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  redeemedBy Employee? @relation("RewardRedeemedBy", fields: [redeemedById], references: [id])
+
+  @@unique([employeeId, cardNumber, tier])
+  @@index([redeemedAt])
+  @@map("rewards")
+}
