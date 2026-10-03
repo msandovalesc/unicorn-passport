@@ -1,0 +1,35 @@
+node_modules/
+.env
+.env.*
+dist/
+build/
+.next/
+coverage/
+.DS_Store
+*.log
+__pycache__/
+*.pyc
+.venv/
+vendor/
+target/
+bin/Debug/
+bin/Release/
+obj/
+out/
+
+# Compiled binaries
+*.dll
+*.exe
+*.pdb
+*.o
+*.so
+*.dylib
+*.class
+*.jar
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.suo
+*.user
