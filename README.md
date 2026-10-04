@@ -96,7 +96,8 @@ prisma/              schema.prisma, migrations, seed.ts
 assets/brand         official unosquare logos (from the Visual Identity System)
 scripts/             local-db.ts, render-stamp-strips.ts
 public/wallet        pre-rendered strip (Apple) and hero (Google) images 0–10, logos, icons
-public/brand         unicorn SVGs, non-overlapping background tile, logo colourways
+public/brand         unicorn SVGs (filled + outline), non-overlapping background tile, logo colourways
+assets/unicorn       source artwork as supplied (outline PNG is vectorized by scripts/vectorize-outline.ts)
 src/app              pages: / (home), /signin, /join, /card, /admin, /r/[token]
 src/lib              progress (card maths), card, authRules, session, unicorn, stampStrip
 src/components       PassCard, StampGrid, UnicornPattern, WalletButtons, Logo

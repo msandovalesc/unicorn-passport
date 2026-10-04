@@ -12,6 +12,7 @@ import sharp from "sharp";
 import { STRIP_SIZES, stampStripSvg } from "../src/lib/stampStrip";
 import { ART_VIEWBOX, BLUE_UNICORN, BRAND, LIGHT_UNICORN, unicornPaths, unicornSvg } from "../src/lib/unicorn";
 import { unicornPatternSvg } from "../src/lib/pattern";
+import { OUTLINE_PATH, OUTLINE_VIEWBOX } from "../src/lib/unicornOutline";
 
 const root = path.resolve(__dirname, "..");
 const walletDir = path.join(root, "public", "wallet");
@@ -50,6 +51,11 @@ async function main() {
   await fs.writeFile(path.join(brandDir, "unicorn-blue.svg"), unicornSvg(BLUE_UNICORN));
   // Non-overlapping background tile for dark/blue screens.
   await fs.writeFile(path.join(brandDir, "unicorn-pattern.svg"), unicornPatternSvg());
+
+  // Outline unicorn (vector, ® removed) for other uses: slides, emails, print.
+  for (const [name, color] of [["blue", BRAND.blue500], ["light", BRAND.light], ["dark", BRAND.dark]] as const) {
+    await fs.writeFile(path.join(brandDir, `unicorn-outline-${name}.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${OUTLINE_VIEWBOX}" width="300" height="300"><path d="${OUTLINE_PATH}" fill="${color}"/></svg>`);
+  }
 
   // Logos: white on blue (wallet card), white and dark (web).
   const imagotype = await fs.readFile(path.join(root, "assets", "brand", "imagotype.svg"), "utf8");

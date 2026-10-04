@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { UnicornOutline } from "@/components/UnicornOutline";
 import { db } from "@/lib/db";
 
 export const metadata: Metadata = { title: "Admin" };
@@ -44,7 +45,10 @@ export default async function AdminOverview() {
       <section className="panel stack-sm">
         <p className="eyebrow">Check-in open now</p>
         {liveEvents.length === 0 ? (
-          <p className="muted">No events are open for check-in right now.</p>
+          <div className="empty-state">
+            <UnicornOutline size={64} color="var(--blue-300)" />
+            <p className="muted">No events are open for check-in right now.</p>
+          </div>
         ) : (
           <ul className="reward-list">
             {liveEvents.map((e) => (
@@ -58,7 +62,7 @@ export default async function AdminOverview() {
           </ul>
         )}
       </section>
-      <p className="note">Events, attendance, rewards, tiers and reports pages arrive in milestones 2–5.</p>
+      <p className="note">Attendance, rewards, tiers and reports pages arrive in milestones 4–5.</p>
     </div>
   );
 }

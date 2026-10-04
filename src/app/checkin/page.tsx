@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { UnicornOutline } from "@/components/UnicornOutline";
 import { requireEmployee } from "@/lib/session";
 import { submitCode } from "./actions";
 
@@ -14,7 +15,10 @@ export default async function CheckinPage({ searchParams }: { searchParams: Prom
   return (
     <main className="screen surface-light">
       <div className="container stack-lg">
-        <Logo tone="dark" />
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
+          <Logo tone="dark" />
+          <UnicornOutline size={72} color="var(--blue-500)" />
+        </div>
         <section className="stack-sm">
           <p className="eyebrow">Check in</p>
           <h1 style={{ fontSize: 32 }}>
@@ -38,7 +42,7 @@ export default async function CheckinPage({ searchParams }: { searchParams: Prom
               spellCheck={false}
               inputMode="text"
               maxLength={8}
-              placeholder="e.g. K7M2QX"
+              placeholder="K7M2QX"
               style={{ fontSize: 24, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600 }}
             />
           </label>

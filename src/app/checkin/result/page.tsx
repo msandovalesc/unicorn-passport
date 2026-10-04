@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LocalTime } from "@/components/LocalTime";
 import { PassCard } from "@/components/PassCard";
+import { UnicornOutline } from "@/components/UnicornOutline";
 import { UnicornPattern } from "@/components/UnicornPattern";
 import { cardQrSvg, ensureWebPass, getCardState } from "@/lib/card";
 import { db } from "@/lib/db";
@@ -115,8 +116,8 @@ export default async function CheckinResultPage({ searchParams }: { searchParams
 
   return (
     <main className="screen surface-dark">
-      <UnicornPattern seed={8} />
-      <div className="container stack-lg">
+      <div className="container stack-lg" style={{ paddingTop: 64 }}>
+        <UnicornOutline size={120} color="var(--light)" className="outline-illustration" />
         <section className="stack-sm">
           <p className="eyebrow">Check-in</p>
           <h1 style={{ fontSize: 32 }}>
