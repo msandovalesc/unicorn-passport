@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { Logo } from "@/components/Logo";
 import { requireAdmin } from "@/lib/session";
 
@@ -12,19 +13,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="container container-wide" style={{ paddingBottom: 16, paddingTop: 16 }}>
           <div className="topbar">
             <div className="row">
-              <Logo />
+              <Link href="/admin" aria-label="Admin overview">
+                <Logo />
+              </Link>
               <span className="eyebrow">Passport admin</span>
             </div>
             <span className="small muted">{employee.name}</span>
           </div>
-          <nav className="admin-nav" style={{ marginTop: 16 }} aria-label="Admin">
-            <Link href="/admin">Overview</Link>
-            <Link href="/admin/events">Events</Link>
-            <Link href="/admin/employees">Employees</Link>
-            <Link href="/admin/rewards">Rewards</Link>
-            <Link href="/admin/tiers">Tiers</Link>
-            <Link href="/admin/reports">Reports</Link>
-          </nav>
+          <AdminNav />
         </div>
       </header>
       <main className="container container-wide">{children}</main>

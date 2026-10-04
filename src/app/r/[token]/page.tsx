@@ -12,5 +12,5 @@ export default async function CardTokenPage({ params }: { params: Promise<{ toke
   await requireAdmin(`/r/${token}`);
   const pass = await db.pass.findUnique({ where: { cardToken: token }, select: { employeeId: true } });
   if (!pass) notFound();
-  redirect(`/admin/employees/${pass.employeeId}`);
+  redirect(`/admin/employees/${pass.employeeId}?scanned=1`);
 }

@@ -13,8 +13,8 @@ The web app is the single source of truth. Wallet cards only display the current
 | 1. Foundation | Next.js app, data model and seed, Microsoft 365 sign-in, enrollment, web card, brand styling, unicorn stamp images | ✅ Done |
 | 2. Core loop | Rotating event QR, check-in rules and tests, typed code for virtual events, reward unlocking, celebration screen | ✅ Done |
 | 3. Wallets | Apple Wallet (.pkpass, PassKit web service, APNs), Google Wallet (loyalty class/objects, save link, updates) | Next |
-| 4. Admin | Events, live attendance, manual stamps, employee search, redeem by card scan | |
-| 5. Polish | Tier editor, CSV reports, metrics, pilot feedback | |
+| 4. Admin | Events, live attendance, manual stamps, employee search, redeem by card scan | ✅ Done |
+| 5. Polish | Tier editor ✅, CSV reports ✅, dashboard metrics ✅, design refinements and pilot feedback | In progress |
 
 ## Stack
 
@@ -49,6 +49,8 @@ With `DEV_LOGIN=true` (local only, ignored in production), the sign-in page list
 | Elena Complete | 10/10, both rewards pending |
 | Fer Secondcard | Card #2 (12 stamps), first card's rewards already redeemed |
 | Gabo Newbie | Not enrolled yet: goes through the Office/Remote choice |
+
+The seed also creates about 45 generated employees with 12 weeks of realistic attendance. They don't appear in the dev login list. They're there so the admin dashboard, reports and rewards queue have data.
 
 Other commands:
 
@@ -88,6 +90,19 @@ Single-device users at a virtual event go to **Check in** (`/checkin`) and type 
   - 6 typed-code attempts per 5 min per employee
 
 **Tests:** `npm test` runs the rules (token rotation, codes, check-in window, pass) and an end-to-end suite against a real test database (`TEST_DATABASE_URL`). That suite covers one stamp per event under 8 simultaneous scans, tier unlocks on card #1 and card #2, typed codes, enrollment and manual stamps. Start `npm run db:local` first, or the database tests are skipped with a notice.
+
+## Admin area (`/admin`, Entra admin role or group only)
+
+| Page | What admins do there |
+|---|---|
+| **Overview** | Key numbers: cards issued, wallet passes, active cards, check-ins in the last 30 days vs the 30 before, average attendance, and rewards to hand out. A **weekly check-in trend** chart (in person vs virtual, with hover details and a table view). Attendance for recent events, plus live and upcoming events. |
+| **Events** | Create and edit events. Times are entered in your local time zone. By default check-in opens 30 min before the start and closes 1 hour after the end. Close check-in early, reopen it, or delete an event nobody checked in to. Each event page has a **live attendance list and count** (refreshes every 10 seconds while check-in is open), a breakdown by QR scan, typed code or manual stamp, **manual stamps** with a note, a CSV download and **Show QR**. |
+| **Employees** | Search by name, email or location, and filter by track. Each person's page shows their card, stamps, rewards and wallet status. From there admins can change their track, add a manual stamp for a past event, and mark rewards redeemed (with undo). |
+| **Rewards** | A count of each merch item to prepare. The queue of rewards waiting to be handed out (oldest first) with **Mark redeemed**. Recently handed out rewards, with undo. **Scan a card** with the laptop or phone camera; scanning a card QR with any phone camera also opens the employee page. |
+| **Tiers** | For each track (e.g. Office, Remote), choose which stamps (1–10) unlock which merch. Rename tracks and add new ones. Changes apply to future stamps; rewards already unlocked keep their item. |
+| **Reports** | CSV downloads for attendance, rewards and employees. Attendance and rewards can be filtered by date. Files open in Excel with accents intact, and values that look like spreadsheet formulas are made safe. |
+
+Every admin action re-checks admin rights on the server. Manual stamps record who added them, and redemptions record who handed the reward out.
 
 ## Project layout
 

@@ -23,7 +23,7 @@ export default async function SignInPage({
   const sp = await searchParams;
   const redirectTo = safeCallback(sp.callbackUrl);
   const devUsers = devLoginEnabled
-    ? await db.employee.findMany({ orderBy: { name: "asc" }, select: { name: true, email: true } })
+    ? await db.employee.findMany({ where: { m365ObjectId: { startsWith: "dev-" } }, orderBy: { name: "asc" }, select: { name: true, email: true } })
     : [];
   const fromCheckin = redirectTo.startsWith("/checkin");
 

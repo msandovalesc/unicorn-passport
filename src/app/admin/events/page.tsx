@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Events" };
 
 const STATE_LABEL = { open: "Check-in open", not_open: "Upcoming", closed: "Closed" } as const;
 
-/** Event list with "Show QR". Creating and editing events arrives in Milestone 4. */
+/** All events, live first, with the number of people checked in. */
 export default async function EventsPage() {
   const now = new Date();
   const events = await db.event.findMany({
@@ -22,9 +22,19 @@ export default async function EventsPage() {
 
   return (
     <div className="stack-lg">
-      <h1 style={{ fontSize: 32 }}>
-        <strong>Events</strong>
-      </h1>
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <h1 style={{ fontSize: 32 }}>
+          <strong>Events</strong>
+        </h1>
+        <div className="row">
+          <a href="/api/admin/reports/attendance" className="btn btn-ghost">
+            Download attendance CSV
+          </a>
+          <Link href="/admin/events/new" className="btn btn-primary">
+            + New event
+          </Link>
+        </div>
+      </div>
       <div className="panel" style={{ padding: 0, overflowX: "auto" }}>
         <table className="table">
           <thead>
@@ -33,7 +43,7 @@ export default async function EventsPage() {
               <th>Type</th>
               <th>Check-in window</th>
               <th>Status</th>
-              <th style={{ textAlign: "right" }}>Stamps</th>
+              <th style={{ textAlign: "right" }}>People</th>
               <th />
             </tr>
           </thead>
@@ -41,7 +51,9 @@ export default async function EventsPage() {
             {withState.map((e) => (
               <tr key={e.id}>
                 <td>
-                  <strong>{e.name}</strong>
+                  <Link href={`/admin/events/${e.id}`}>
+                    <strong>{e.name}</strong>
+                  </Link>
                   {e.description && <div className="small muted">{e.description}</div>}
                 </td>
                 <td>{e.type === "virtual" ? "Virtual" : "In person"}</td>
