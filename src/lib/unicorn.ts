@@ -1,7 +1,8 @@
 /**
- * Unicorn pixel art (Unosquare cultural asset), with the ® mark removed.
- * Two-tone: "mane" (mane, tail, ear tip) and "body". Original viewBox 0 0 300 300; the art
- * spans y 27.7–300, so ART_VIEWBOX crops it to a square centred on the figure.
+ * Unicorn pixel art (Unosquare cultural asset), drawn exactly as supplied (no ® in the source).
+ * Two-tone: "mane" (mane, tail, ear tip) and "body" (body, legs and the segmented horn on top).
+ * Original viewBox 0 0 300 300; the horn reaches y = 0, so ART_VIEWBOX keeps the full figure
+ * with a little padding.
  */
 export const MANE_PATHS = [
   "M40.0001 138.662V158.83H20V219.331H0V239.498H40.0001V219.331H60.0138L59.9999 158.83H79.9999V138.662H40.0001Z",
@@ -13,9 +14,12 @@ export const BODY_PATHS = [
   "M240 199.164V219.331H260V259.666H240V279.833H260V259.666H280V199.164H240Z",
   "M140.014 239.498L140 259.665L140.014 279.833H140V300H159.999L159.985 259.665L159.999 239.498H140.014Z",
   "M280 78.1618V57.9947L239.999 57.994V37.8268L240 27.744H220L220 37.8268V57.994V98.3282H200V158.83H180V138.662L79.9999 138.662V158.83H59.9999L59.9999 219.332H79.9999V239.499H59.9999V300H79.9999V259.666H99.9999V219.332H200V300H220V199.165L240 199.151V98.3289H300V78.1618H280Z",
+  // Horn segments
+  "M232.5 17.66H220V22.7018H232.5V17.66Z",
+  "M227.5 7.57668H225V0H220V12.6185H227.5V7.57668Z",
 ];
 
-export const ART_VIEWBOX = "-6 14 312 300";
+export const ART_VIEWBOX = "-8 -8 316 316";
 
 export type UnicornColors = { body: string; mane: string };
 

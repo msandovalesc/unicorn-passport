@@ -36,7 +36,7 @@ export default async function CheckinResultPage({ searchParams }: { searchParams
 
     return (
       <main className="screen surface-dark">
-        <UnicornPattern seed={42} count={18} opacity={[0.06, 0.16]} />
+        <UnicornPattern seed={42} />
         <div className="container stack-lg">
           <section className="stack-sm" style={{ textAlign: "center" }}>
             <p className="eyebrow">{event.name}</p>
@@ -115,7 +115,7 @@ export default async function CheckinResultPage({ searchParams }: { searchParams
 
   return (
     <main className="screen surface-dark">
-      <UnicornPattern seed={8} count={8} />
+      <UnicornPattern seed={8} />
       <div className="container stack-lg">
         <section className="stack-sm">
           <p className="eyebrow">Check-in</p>

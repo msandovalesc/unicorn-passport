@@ -29,7 +29,7 @@ export default async function SignInPage({
 
   return (
     <main className="screen surface-dark">
-      <UnicornPattern seed={11} count={10} />
+      <UnicornPattern seed={11} />
       <div className="container stack-lg">
         <Logo />
         <section className="stack">

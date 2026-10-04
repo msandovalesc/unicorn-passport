@@ -11,6 +11,7 @@ import path from "node:path";
 import sharp from "sharp";
 import { STRIP_SIZES, stampStripSvg } from "../src/lib/stampStrip";
 import { ART_VIEWBOX, BLUE_UNICORN, BRAND, LIGHT_UNICORN, unicornPaths, unicornSvg } from "../src/lib/unicorn";
+import { unicornPatternSvg } from "../src/lib/pattern";
 
 const root = path.resolve(__dirname, "..");
 const walletDir = path.join(root, "public", "wallet");
@@ -47,6 +48,8 @@ async function main() {
   // Unicorn source files for the web app.
   await fs.writeFile(path.join(brandDir, "unicorn-light.svg"), unicornSvg(LIGHT_UNICORN));
   await fs.writeFile(path.join(brandDir, "unicorn-blue.svg"), unicornSvg(BLUE_UNICORN));
+  // Non-overlapping background tile for dark/blue screens.
+  await fs.writeFile(path.join(brandDir, "unicorn-pattern.svg"), unicornPatternSvg());
 
   // Logos: white on blue (wallet card), white and dark (web).
   const imagotype = await fs.readFile(path.join(root, "assets", "brand", "imagotype.svg"), "utf8");

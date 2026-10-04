@@ -20,7 +20,7 @@ export default async function CardPage() {
 
   return (
     <main className="screen surface-dark">
-      <UnicornPattern seed={5} count={10} />
+      <UnicornPattern seed={5} />
       <div className="container stack-lg">
         <PassCard name={employee.name} progress={progress} qrSvg={qr} />
 

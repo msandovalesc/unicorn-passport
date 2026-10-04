@@ -96,7 +96,7 @@ prisma/              schema.prisma, migrations, seed.ts
 assets/brand         official unosquare logos (from the Visual Identity System)
 scripts/             local-db.ts, render-stamp-strips.ts
 public/wallet        pre-rendered strip (Apple) and hero (Google) images 0–10, logos, icons
-public/brand         unicorn SVGs (® removed) and logo colourways
+public/brand         unicorn SVGs, non-overlapping background tile, logo colourways
 src/app              pages: / (home), /signin, /join, /card, /admin, /r/[token]
 src/lib              progress (card maths), card, authRules, session, unicorn, stampStrip
 src/components       PassCard, StampGrid, UnicornPattern, WalletButtons, Logo
@@ -188,7 +188,7 @@ Needs an Apple Developer **organization** account for Unosquare.
 5. **Events have `closed_at`**, so admins can close check-in early.
 6. **Location** is optional free text entered at sign-up. It isn't read from Entra, which needs an extra Graph permission.
 7. **Sessions last 60 days** on the phone, so scanning an event QR stamps instantly. Admin rights are re-checked every 12 hours.
-8. **Official logo:** the imagotype comes from the Visual Identity System site, and its ® is kept. Only the unicorn's ® was removed. The unicorn mane uses Blue 200/300 so it stays visible on both circle colors.
+8. **Official logo:** the imagotype comes from the Visual Identity System site, and its ® is kept. The unicorn SVG supplied has no ® mark, so it is used exactly as drawn, horn included. The background is one pre-rendered tile (`public/brand/unicorn-pattern.svg`) where no unicorns overlap; a designer-made SVG tile can replace it. The unicorn mane uses Blue 200/300 so it stays visible on both circle colors.
 9. **Placeholder tiers:** 5 stamps and 10 stamps, with placeholder merch names. Real items can be set in the admin page (Milestone 5) or in `prisma/seed.ts`.
 10. **Check-in pass lasts 15 minutes** after a valid scan, to cover the sign-in time. The check-in window is still checked when the stamp is saved.
 11. **Typed codes work only for virtual events** and rotate every minute with the QR, accepting the current and previous code. If people find this too fast for typing, it can be changed to a longer window.
