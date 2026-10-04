@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ensureWebPass } from "@/lib/card";
 import { db } from "@/lib/db";
-import { requireEmployee } from "@/lib/session";
+import { requireEmployee, safeCallback } from "@/lib/session";
 
 const schema = z.object({
   track: z.string().min(1),
@@ -25,5 +25,6 @@ export async function chooseTrack(formData: FormData) {
     data: { trackId: track.id, location: parsed.data.location ?? employee.location },
   });
   await ensureWebPass(employee.id);
-  redirect("/join?welcome=1");
+  const next = safeCallback(String(formData.get("next") ?? ""), "");
+  redirect(next || "/join?welcome=1");
 }

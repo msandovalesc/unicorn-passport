@@ -171,3 +171,12 @@ model Reward {
   @@index([redeemedAt])
   @@map("rewards")
 }
+
+// Fixed-window rate limiting shared by all app instances (no Redis needed).
+model RateLimit {
+  key          String   @id
+  windowStart  DateTime @map("window_start")
+  count        Int
+
+  @@map("rate_limits")
+}

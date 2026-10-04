@@ -54,6 +54,7 @@ export default async function CardPage() {
         </section>
 
         <div className="row" style={{ justifyContent: "space-between" }}>
+          <Link href="/checkin">Have an event code?</Link>
           <Link href="/join">Add to wallet</Link>
           <form
             action={async () => {

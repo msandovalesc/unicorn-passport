@@ -11,8 +11,8 @@ The web app is the single source of truth. Wallet cards only display the current
 | Milestone | Scope | State |
 |---|---|---|
 | 1. Foundation | Next.js app, data model and seed, Microsoft 365 sign-in, enrollment, web card, brand styling, unicorn stamp images | ✅ Done |
-| 2. Core loop | Rotating event QR, check-in rules and tests, typed code for virtual events, reward unlocking, celebration screen | Next |
-| 3. Wallets | Apple Wallet (.pkpass, PassKit web service, APNs), Google Wallet (loyalty class/objects, save link, updates) | |
+| 2. Core loop | Rotating event QR, check-in rules and tests, typed code for virtual events, reward unlocking, celebration screen | ✅ Done |
+| 3. Wallets | Apple Wallet (.pkpass, PassKit web service, APNs), Google Wallet (loyalty class/objects, save link, updates) | Next |
 | 4. Admin | Events, live attendance, manual stamps, employee search, redeem by card scan | |
 | 5. Polish | Tier editor, CSV reports, metrics, pilot feedback | |
 
@@ -65,6 +65,29 @@ npm run assets:stamps    # re-render wallet stamp strips, logos and icons
 - **Reward tracks:** each employee picks *Office* or *Remote* at sign-up. Each track has its own tiers (stamp count → merch item), so Remote can unlock prizes earlier. Admins can edit tiers without a deploy. The seed data uses 5 and 10 stamps for both tracks.
 - Rewards are created automatically when a tier is reached and are tied to a card number, so they can be earned again on every card.
 - The card QR holds an opaque token (`/r/<token>`). It never contains the email or employee ID. Only admins can open it.
+
+## How check-in works
+
+1. The host opens **Admin → Events → Show QR** for an event whose check-in window is open. The screen shows a QR that **changes every 60 seconds**, a countdown and the live check-in count. For virtual events it also shows a **6-character code**, which changes with the QR.
+2. The employee scans the QR with the phone camera. It opens `/c/<token>`. The token is `eventId.window.signature`, signed with the event's `qr_secret`. Only the **current and previous** tokens are accepted, so a forwarded photo stops working within 1–2 minutes.
+3. A valid scan gives that browser a **15-minute check-in pass** (an httpOnly cookie, so it can't be shared as a link). This is so the stamp isn't lost if Microsoft sign-in takes longer than the QR's lifetime. New employees choose their track, then go straight back to the check-in.
+4. The stamp is saved if the event's check-in window is still open. The database's unique key allows **one stamp per employee per event**. Rewards for any tier reached are created in the same transaction.
+5. The employee sees the celebration screen: the new unicorn pops into its slot, and a "Reward unlocked" panel appears with a **Claim reward** button. Then the wallet card update is triggered (Milestone 3 sends the actual Apple/Google push).
+
+Single-device users at a virtual event go to **Check in** (`/checkin`) and type the code.
+
+**Anti-abuse rules:**
+- Sign-in is always required.
+- Tokens are signed and rotate every minute.
+- Stamps are only accepted inside the check-in window, and admins can close an event early.
+- One stamp per event, enforced by a unique key.
+- A per-employee database lock means two simultaneous stamps can't skip a reward.
+- Rate limits, stored in Postgres so they hold across servers:
+  - 120 scans/min per IP
+  - 20 check-ins/min per employee
+  - 6 typed-code attempts per 5 min per employee
+
+**Tests:** `npm test` runs the rules (token rotation, codes, check-in window, pass) and an end-to-end suite against a real test database (`TEST_DATABASE_URL`). That suite covers one stamp per event under 8 simultaneous scans, tier unlocks on card #1 and card #2, typed codes, enrollment and manual stamps. Start `npm run db:local` first, or the database tests are skipped with a notice.
 
 ## Project layout
 
@@ -167,3 +190,7 @@ Needs an Apple Developer **organization** account for Unosquare.
 7. **Sessions last 60 days** on the phone, so scanning an event QR stamps instantly. Admin rights are re-checked every 12 hours.
 8. **Official logo:** the imagotype comes from the Visual Identity System site, and its ® is kept. Only the unicorn's ® was removed. The unicorn mane uses Blue 200/300 so it stays visible on both circle colors.
 9. **Placeholder tiers:** 5 stamps and 10 stamps, with placeholder merch names. Real items can be set in the admin page (Milestone 5) or in `prisma/seed.ts`.
+10. **Check-in pass lasts 15 minutes** after a valid scan, to cover the sign-in time. The check-in window is still checked when the stamp is saved.
+11. **Typed codes work only for virtual events** and rotate every minute with the QR, accepting the current and previous code. If people find this too fast for typing, it can be changed to a longer window.
+12. **The event QR display is admin-only.** If hosts aren't admins, we could add a "host" role or a per-event host link in Milestone 4.
+13. **Rate limits** use a small `rate_limits` table in Postgres instead of Redis.

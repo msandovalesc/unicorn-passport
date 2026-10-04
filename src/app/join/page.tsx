@@ -6,14 +6,18 @@ import { UnicornPattern } from "@/components/UnicornPattern";
 import { WalletButtons } from "@/components/WalletButtons";
 import { cardQrSvg, ensureWebPass, getCardState } from "@/lib/card";
 import { db } from "@/lib/db";
-import { requireEmployee } from "@/lib/session";
+import { redirect } from "next/navigation";
+import { requireEmployee, safeCallback } from "@/lib/session";
 import { chooseTrack } from "./actions";
 
 export const metadata: Metadata = { title: "Get your card" };
 
-export default async function JoinPage({ searchParams }: { searchParams: Promise<{ error?: string; welcome?: string }> }) {
-  const { employee } = await requireEmployee("/join");
+export default async function JoinPage({ searchParams }: { searchParams: Promise<{ error?: string; welcome?: string; next?: string }> }) {
   const sp = await searchParams;
+  const next = sp.next ? safeCallback(sp.next, "") : "";
+  const { employee } = await requireEmployee(next ? `/join?next=${encodeURIComponent(next)}` : "/join");
+  // Already enrolled and on the way somewhere (e.g. a pending check-in): carry on.
+  if (employee.trackId && next) redirect(next);
 
   // Step 1: pick a reward track (form on a plain light screen: no pattern behind forms).
   if (!employee.trackId) {
@@ -27,10 +31,11 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
             <h1 style={{ fontSize: 32 }}>
               How do you <strong>usually join events?</strong>
             </h1>
-            <p className="muted">This picks your reward track. You can ask the events team to change it later.</p>
+            <p className="muted">{next ? "One quick question and your stamp is on its way. " : ""}This picks your reward track. You can ask the events team to change it later.</p>
           </section>
           {sp.error && <p className="alert">Pick one of the options to continue.</p>}
           <form action={chooseTrack} className="stack">
+            {next && <input type="hidden" name="next" value={next} />}
             {tracks.map((t, i) => (
               <label key={t.id} className="choice">
                 <input type="radio" name="track" value={t.slug} defaultChecked={i === 0} required />
