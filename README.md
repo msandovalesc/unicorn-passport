@@ -121,7 +121,7 @@ tests/               Vitest specs
 
 ## Brand rules applied
 
-- **Program logo:** the Unicorn Passport wordmark leads on employee screens (white version on dark/blue, blue version on light) and the unosquare wordmark signs it. The web card and wallet pass show unosquare on the left and Unicorn Passport on the right. The "U" icon is the browser and home-screen icon, the Apple Wallet icon and the Google Wallet program logo. To change the logos, replace the files in `assets/brand/unicorn-passport/` and run `npm run assets:stamps`.
+- **Program logo:** the Unicorn Passport wordmark leads on employee screens (white version on dark/blue, blue version on light) and the unosquare wordmark signs it. The card (web and wallet) shows only the Unicorn Passport logo at the top, with the card number on the right from card #2 onward (decided 2026-10-06; replaces the unosquare wordmark from the original brief). The "U" icon is the browser and home-screen icon, the Apple Wallet icon and the Google Wallet program logo. To change the logos, replace the files in `assets/brand/unicorn-passport/` and run `npm run assets:stamps`.
 
 From the Unosquare Visual Identity System:
 

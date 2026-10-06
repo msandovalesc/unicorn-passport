@@ -1,6 +1,5 @@
 import { CARD_SIZE, type CardProgress } from "@/lib/progress";
 import { env } from "@/lib/env";
-import { Logo } from "./Logo";
 import { ProgramLogo } from "./ProgramLogo";
 import { StampGrid } from "./StampGrid";
 
@@ -20,11 +19,8 @@ export function PassCard({
   return (
     <section className="pass" aria-label={`${env.PROGRAM_NAME} card`}>
       <div className="pass-head">
-        <Logo />
-        <div className="pass-program">
-          <ProgramLogo tone="dark" width={118} />
-          {progress.cardNumber > 1 && <div className="pass-label">Card #{progress.cardNumber}</div>}
-        </div>
+        <ProgramLogo tone="dark" width={140} />
+        {progress.cardNumber > 1 && <div className="pass-label">Card #{progress.cardNumber}</div>}
       </div>
 
       <div className="pass-member">
