@@ -1,6 +1,7 @@
 import { CARD_SIZE, type CardProgress } from "@/lib/progress";
 import { env } from "@/lib/env";
 import { Logo } from "./Logo";
+import { ProgramLogo } from "./ProgramLogo";
 import { StampGrid } from "./StampGrid";
 
 /** Web version of the wallet card. Same layout as the Apple/Google passes. */
@@ -21,7 +22,7 @@ export function PassCard({
       <div className="pass-head">
         <Logo />
         <div className="pass-program">
-          {env.PROGRAM_NAME}
+          <ProgramLogo tone="dark" width={118} />
           {progress.cardNumber > 1 && <div className="pass-label">Card #{progress.cardNumber}</div>}
         </div>
       </div>

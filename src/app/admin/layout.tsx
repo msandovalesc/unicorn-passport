@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { Logo } from "@/components/Logo";
+import { ProgramLogo } from "@/components/ProgramLogo";
 import { requireAdmin } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +14,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="topbar">
             <div className="row">
               <Link href="/admin" aria-label="Admin overview">
-                <Logo />
+                <ProgramLogo tone="dark" width={120} />
               </Link>
-              <span className="eyebrow">Passport admin</span>
+              <span className="eyebrow">Admin</span>
             </div>
             <span className="small muted">{employee.name}</span>
           </div>

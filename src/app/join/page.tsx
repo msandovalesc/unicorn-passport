@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
+import { BrandHeader } from "@/components/BrandHeader";
 import { PassCard } from "@/components/PassCard";
 import { UnicornPattern } from "@/components/UnicornPattern";
 import { WalletButtons } from "@/components/WalletButtons";
@@ -25,7 +25,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
     return (
       <main className="screen surface-light">
         <div className="container stack-lg">
-          <Logo tone="dark" />
+          <BrandHeader tone="light" />
           <section className="stack-sm">
             <p className="eyebrow">Welcome, {employee.name.split(" ")[0]}</p>
             <h1 style={{ fontSize: 32 }}>

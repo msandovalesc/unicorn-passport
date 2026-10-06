@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { Logo } from "@/components/Logo";
+import { ProgramLogo } from "@/components/ProgramLogo";
 import { StampGrid } from "@/components/StampGrid";
 import { UnicornPattern } from "@/components/UnicornPattern";
 
@@ -24,9 +25,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ e
         {error === "not-admin" && <p className="alert">That page is for the events team only.</p>}
 
         <section className="stack">
-          <p className="eyebrow">Unosquare events</p>
-          <h1 style={{ fontSize: 40 }}>
-            Unicorn <strong>Passport</strong>
+          <h1 className="hero-logo">
+            <ProgramLogo tone="dark" width={360} />
           </h1>
           <p className="muted" style={{ fontSize: 17 }}>
             Show up, scan in, collect unicorns. Every company event earns a stamp, and every few stamps unlocks Unosquare merch.

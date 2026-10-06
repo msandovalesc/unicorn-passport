@@ -108,7 +108,7 @@ Every admin action re-checks admin rights on the server. Manual stamps record wh
 
 ```
 prisma/              schema.prisma, migrations, seed.ts
-assets/brand         official unosquare logos (from the Visual Identity System)
+assets/brand         official unosquare logos (Visual Identity System) and unicorn-passport/ (program logos, icon and wallet logo sets from Claude Design, with PDF vector originals)
 scripts/             local-db.ts, render-stamp-strips.ts
 public/wallet        pre-rendered strip (Apple) and hero (Google) images 0–10, logos, icons
 public/brand         unicorn SVGs (filled + outline), non-overlapping background tile, logo colourways
@@ -120,6 +120,8 @@ tests/               Vitest specs
 ```
 
 ## Brand rules applied
+
+- **Program logo:** the Unicorn Passport wordmark leads on employee screens (white version on dark/blue, blue version on light) and the unosquare wordmark signs it. The web card and wallet pass show unosquare on the left and Unicorn Passport on the right. The "U" icon is the browser and home-screen icon, the Apple Wallet icon and the Google Wallet program logo. To change the logos, replace the files in `assets/brand/unicorn-passport/` and run `npm run assets:stamps`.
 
 From the Unosquare Visual Identity System:
 

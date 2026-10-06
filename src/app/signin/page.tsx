@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { signIn } from "@/auth";
-import { Logo } from "@/components/Logo";
+import { BrandHeader } from "@/components/BrandHeader";
 import { UnicornPattern } from "@/components/UnicornPattern";
 import { db } from "@/lib/db";
 import { devLoginEnabled, entraConfigured } from "@/lib/env";
@@ -31,9 +31,8 @@ export default async function SignInPage({
     <main className="screen surface-dark">
       <UnicornPattern seed={11} />
       <div className="container stack-lg">
-        <Logo />
+        <BrandHeader />
         <section className="stack">
-          <p className="eyebrow">Unicorn Passport</p>
           <h1 style={{ fontSize: 32 }}>
             {fromCheckin ? (
               <>
