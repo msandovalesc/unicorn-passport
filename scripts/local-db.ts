@@ -12,6 +12,22 @@ const base = process.env.LOCALAPPDATA ?? path.join(os.homedir(), ".local", "shar
 const dataDir = path.join(base, "unicorn-passport", "pgdata");
 const port = Number(process.env.LOCAL_PG_PORT ?? 5433);
 
+/** After a reboot or crash Postgres leaves postmaster.pid behind and refuses to start; remove it if that process is gone. */
+function clearStaleLock() {
+  const lock = path.join(dataDir, "postmaster.pid");
+  if (!fs.existsSync(lock)) return;
+  const pid = Number(fs.readFileSync(lock, "utf8").split(/\r?\n/)[0]);
+  let alive = false;
+  try {
+    process.kill(pid, 0);
+    alive = true;
+  } catch {}
+  if (!alive) {
+    fs.rmSync(lock);
+    console.log("Removed a stale Postgres lock file from the last shutdown.");
+  }
+}
+
 async function main() {
   const pg = new EmbeddedPostgres({ databaseDir: dataDir, user: "passport", password: "passport", port, persistent: true });
   const fresh = !fs.existsSync(path.join(dataDir, "PG_VERSION"));
@@ -19,6 +35,7 @@ async function main() {
     fs.mkdirSync(path.dirname(dataDir), { recursive: true });
     await pg.initialise();
   }
+  clearStaleLock();
   await pg.start();
   if (fresh) {
     await pg.createDatabase("unicorn_passport");
